@@ -1,0 +1,39 @@
+<script>
+    const postForm = document.getElementById("postForm")
+    const message = document.getElementById("message")
+    const customFile = document.getElementById("customFile")
+    const linkyoutube = document.getElementById("linkyoutube")
+
+    postForm.addEventListener("submit", (e) => {
+        var param = document.createElement("p");
+        e.preventDefault();
+        $.ajax({
+            url: "/createPost/",
+            type: "POST",
+            dataType: "json",
+            data: {
+                postemail: "<%=userSession.email%>",
+                postavatar: "<%=userSession.image%>",
+                postfullname: "<%=userSession.displayName%>",
+                postdescription: message.value,
+                postimage: customFile.value,
+                postrole: "<%=userSession.role%>",
+                postlinkyoutube: linkyoutube.value,
+            },
+            success: (kq) => {
+                param.innerHTML = ` <a class="card-link" ">
+                                        <p class="card-text" style="color: black;font-size: 32px;">
+                                            <%=userSession.displayName%>
+                                        </p>
+                                        
+                                    </a>`
+            }
+        });
+
+        console.log(message.value)
+        message.value = "";
+        customFile.value = "";
+        linkyoutube.value = "";
+
+    });
+</script>
