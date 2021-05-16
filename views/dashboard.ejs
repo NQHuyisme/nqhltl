@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TDTU - News</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/clouds/452/cat.png" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/public/javascripts/main.js"></script>
+    <script>
+        var socket = io();
+    </script>
+</head>
+
+<body>
+
+    <%- include('partials/nvbar') -%>
+        <div class="container-fluid gedf-wrapper">
+            <div class="row">
+                <!--Left screen-->
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="h5">
+                                <p class="thumbnail"><img src=" <%=userSession.image%>" width="100" height="100"></p>
+                            </div>
+                            <div class="h7 text-muted">Fullname :
+                                <%=userSession.displayName%>
+                            </div>
+                            <div class="h7 text-muted">
+                                <%=userSession.majoy%>
+                            </div>
+                            <div class="h7 text-muted">
+                                <%=userSession.class%>
+                            </div>
+                            <% if(userSession.role=="3"){ %>
+                                <div class="dropdown">
+                                    <a href="/signup"><img class="rounded-circle" width="40" height="40" src="https://img.icons8.com/clouds/2x/create-new.png" alt=""></a>
+                                </div>
+                                <% } %>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <div class="card gedf-card" style="height: 350px;">
+                                <div class="header" style="border-bottom: solid #e5e5e5 1px;">
+                                    <p style="color: #7f7f7f;text-align: center; margin-top: 10px;">Phòng Khoa</p>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-body">
+                                        <% if(users.length > 0 ) {
+                                            users.forEach(user => {  %>
+                                            <%if (user.role=="2") { %>
+                                                <form id="<%=user.username%>">
+                                                    <a href="/profile/<%=user.email%>">
+                                                        <%=user.displayName%>
+                                                    </a>
+                                                    <br>
+                                                    <% } %>
+                                                        <%});                                            
+                                            }%>
+
+                                                </form>
+                                    </div>
+                                </div>
+                                <div class="timeline-likes" style="margin-bottom: 10px; padding: 5px;">
+                                </div>
+                            </div>
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card gedf-card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="posts-tab" data-toggle="tab" role="tab" aria-controls="posts" aria-selected="true" href="#posts">Your Status</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="images-tab" data-toggle="tab" role="tab" aria-controls="images" aria-selected="false" href="#images">Images</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="youtube-tab" data-toggle="tab" role="tab" aria-controls="youtube" aria-selected="false" href="#youtube">Link Youtube</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <form action="/createPost" method="POST" enctype="multipart/form-data" id="createPost">
+                            <div class="card-body">
+                                <div class="tab-content" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                                        <div class="form-group">
+                                            <label class="sr-only" for="message">post</label>
+                                            <textarea class="form-control" id="message" rows="3" placeholder="What are you thinking?" name="description"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="images" role="tabpanel" aria-labelledby="images-tab">
+                                        <div class="form-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="customFile" name="file_image">
+                                                <label class="custom-file-label" for="customFile">Upload image</label>
+                                            </div>
+                                        </div>
+                                        <div class="py-4"></div>
+                                    </div>
+                                    <div class="tab-pane fade" id="youtube" role="tabpanel" aria-labelledby="posts-tab">
+                                        <div class="form-group">
+                                            <label class="sr-only" for="message">post</label>
+                                            <textarea class="form-control" id="linkyoutube" rows="3" placeholder="Link Youtube: Please change /watch?v= to /embed/" name="linkyoutube"></textarea>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="btn-toolbar justify-content-between">
+                                    <div class="btn-group">
+                                        <button type="submit" class="btn btn-primary">Share</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+                    <!-- end create post -->
+                    <!--all posts -->
+                    <% if(posts.length > 0) {
+                        posts.forEach(post => {  %>
+                        <form id="postStatus">
+                            <div class="card" id="card_full">
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="mr-2">
+                                                <img class="rounded-circle" width="45" height="45" src="<%=post.avatar%>" alt="">
+                                            </div>
+                                            <div class="ml-2">
+                                                <div class="h5 m-0">
+                                                    <a href="/profile/<%=post.username%>">
+                                                        <%=post.fullname%>
+                                                    </a>
+                                                </div>
+                                                <div class="h7 text-muted">
+                                                    <%=post.username%>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <% if(post.username==userSession.email){ %>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-link dropdown" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <img class="rounded-circle" width="40" height="40" src="https://img.icons8.com/plasticine/2x/edit.png" alt="">
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
+                                                        <a class="dropdown-item" href="/deletePost/<%= post._id %>"><img class="rounded-circle" width="35" height="35" src="https://img.icons8.com/clouds/2x/delete-forever.png" alt="">Delete</a>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o">
+                                        <%  let day=new Date().getDate(); let hour=new Date().getHours(); let minutes=new Date().getMinutes(); %>
+                                        <% if(day-post.date.day <1){ %>
+                                        <% if(hour-post.date.time_hours<=1){ %>
+    
+                                        <% if(post.date.time_minutes>minutes){ %>
+                                        about <%=minutes-post.date.time_minutes+60%> min ago
+                                        <%}else{%>
+                                        <% if(minutes-post.date.time_minutes<1){ %>
+                                        just now
+                                        <% }else{ %>
+                                        <% if(minutes>post.date.time_minutes){ %>
+                                        about <%=minutes-post.date.time_minutes%> min ago
+                                        <% } %>
+                                        <% } %>
+                                        <% } %>
+                                        <%}else{%>
+                                        about <%=hour-post.date.time_hours%> h ago
+                                        <%}%>
+                                                  <% }else{ %>
+                                        about <%=day-post.date.day%> d ago
+                                        <%} %>
+                                    </i></div>
+                                    <dic style="text-align: center;">
+                                        <a class="card-link" href="/post/<%= post._id %>">
+                                            <p class="card-text" style="color: black;font-size: 32px; ">
+                                                <%=post.description%>
+                                            </p>
+                                            <% if(post.image!="") { %>
+                                                <div style="text-align:center">
+                                                    <img src="/public/image/<%=post.image%>" style=" height: 200px ;width: 200px; top: 0; left: 0">
+                                                </div>
+                                                <% } %>
+                                        </a>
+                                        <br>
+                                    </dic>
+                                    <div style="text-align: center;">
+                                        <% if(post.linkyoutube!="") { %>
+                                            <iframe width="420" height="315" src="<%=post.linkyoutube%>"></iframe>
+                                            <% } %>
+                                    </div>
+                                    <div class="timeline-likes" style="margin-top: 20px; ">
+                                        <div class="stats-right">
+
+                                            <% if(post.comment.length>0){ %>
+                                                <span class="stats-text" id="commentcount"><%=post.comment.length%> Comments</span>
+                                                <% }else{ %>
+                                                    <span class="stats-text" id="commentcount"></span>
+                                                    <%} %>
+                                        </div>
+                                        <div class="stats">
+                                            <span class="fa-stack fa-fw stats-icon">
+                                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                                            <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                            <span class="stats-text" id="likeCount-<%=post._id%>"><%=1+post.like.length%></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-sm-1">
+                                            <label for="like-<%=post._id%>">
+                                            <% if(post.like.includes(userSession.name)==true){ %>
+                                                <i class="fa fa-gittip" id="Like-<%=post._id%>" style="color: blue; cursor:pointer;"> Like</i>
+                                            <% }else{ %>
+                                            <i class="fa fa-gittip" id="Like-<%=post._id%>" style="color: #777474; cursor:pointer;"> Like</i>
+                                            <% } %>
+                                        </label>
+                                            <button id="like-<%=post._id%>" class="like_count" style="display: none;" type="button"></button>
+                                        </div>
+                                        <script>
+                                            var count = 0;
+                                            document.getElementById("like-<%=post._id%>").addEventListener("click", () => {
+                                                if (document.getElementById("Like-<%=post._id%>").style.color != "blue") {
+                                                    document.getElementById("likeCount-<%=post._id%>").innerHTML = `<%=2+post.like.length%>`;
+                                                }
+                                                document.getElementById("Like-<%=post._id%>").style.color = "blue";
+                                                socket.emit("like_post", {
+                                                    id: "<%=post._id%>",
+                                                    userSession: "<%=userSession.name%>"
+
+                                                });
+
+                                            })
+                                            socket.on("server_send_likecount_<%=post._id%>", (data) => {
+                                                document.getElementById("likeCount-<%=post._id%>").innerHTML = `${data.likecount}`;
+                                            })
+                                        </script>
+                                        <div class="col-sm-2">
+                                            <a href="/post/<%=post._id%>" class="card-link" style="color: #777474;"><i class="fa fa-comment"></i> Comment</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <% });
+              } %>
+                </div>
+                <!--Right screen-->
+                <div class="col-md-2">
+                    <div class="card" style="min-height: 500px;">
+                        <div class="header" style="border-bottom: solid #e5e5e5 1px;">
+                            <p style="color: #7f7f7f;text-align: center; margin-top: 10px;">Thông Báo</p>
+                        </div>
+                        <div class="card-body">
+                            <% if(posts.length > 0 ) {
+                                posts.forEach(post => {  %>
+                                <%if (post.role=="2") { %>
+                                    <form id="<%=post._id%>">
+                                        <a href="/post/<%=post._id%>">
+                                            <%=post.fullname%>
+                                        </a>
+                                        <p>
+                                            -
+                                            <%=post.description%>
+                                        </p>
+                                        <br>
+                                        <% } %>
+                                            <%});                                            
+                                }%>
+
+                                    </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include('partials/postStat') -%>
+</body>
+
+</html>
