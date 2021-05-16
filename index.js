@@ -135,7 +135,7 @@ app.use("/image", express.static(__dirname + "/public/image"))
 app.use("/css", express.static(__dirname + "/public/css"))
 app.use("/partials", express.static(__dirname + "/views/partials"))
 
-var port = process.env.PORT || 8000;
+var port = process.env.PORT;
 // run server
 server.listen(port, function() {
     console.log("Server is listening on port 8000");
