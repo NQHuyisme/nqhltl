@@ -1,0 +1,15 @@
+---
+application:
+  name: "nqhltl"
+  project: "nqhltl"
+  organization: "QoveryCommunity"
+databases:
+- type: "MONGODB"
+  name: "myFirstDatabase"
+  version: "4.4"
+routers:
+- name: "main-nqhltl"
+  routes:
+  - application_name: "nqhltl"
+    paths:
+    - "/*"
