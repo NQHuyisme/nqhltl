@@ -2,7 +2,7 @@
     "name": "web-nqhltl",
     "version": "1.0.0",
     "engines": {
-        "node": "15.3.0",
+        "node": "14.x",
         "npm": "7.12.1"
     },
     "description": "",
